@@ -1,0 +1,97 @@
+# java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/consumo-client.yaml -l java -c ./swagger/consumo-conf.json -o art-client --ignore-file-override .\.swagger-codegen-ignore
+swagger: '2.0'
+info:
+  description: Prueba para desafío de implementación 
+  version: 1.0.0
+  title: API Articulos
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: random@deltaquo.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: 'hn.algolia.com'
+basePath: /api/v1
+tags:
+  - name: articulos
+    description: Lista de articulos a procesar
+schemes:
+  - https
+paths:
+  /search_by_date:
+    get:
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            default: nodejs
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: hitsPerPage
+          required: false
+          schema:
+            type: integer
+            default: 20
+      tags:
+        - articulos
+      summary: Lista de articulos a procesar
+      operationId: articulos
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Articulos
+          schema:
+            $ref: '#/definitions/Articulos'
+definitions:
+  Articulos:
+    type: object
+    properties:
+      hits:
+        type: array
+        items:
+          $ref: '#/definitions/Hit'
+      exhaustiveNbHits:
+        type: boolean
+      hitsPerPage:
+        type: integer
+      nbHits:
+        type: integer
+      nbPages:
+        type: integer
+      page:
+        type: integer
+      params:
+        type: string
+      processingTimeMS:
+        type: integer
+      query:
+        type: string
+  Hit:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      title:
+        type: string
+      url:
+        type: string
+      author:
+        type: string
+      points:
+        type: number
+      comment_text:
+        type: string
+      objectID:
+        type: number
+externalDocs:
+  description: Especificación de swagger
+  url: 'https://swagger.io/docs/specification/about/'

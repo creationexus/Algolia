@@ -1,0 +1,16 @@
+{
+  "groupId"         : "cl.ingerencia.client.algolia",
+  "artifactId"      : "client-algolia",
+  "artifactVersion" : "1.0.0",
+  "artifactDescription" : "Cliente para consumo de api algolia",
+  
+  "basePackage"     : "cl.ingerencia.client.algolia",
+  "invokerPackage"  : "cl.ingerencia.client.algolia.swagger",
+  "apiPackage"      : "cl.ingerencia.client.algolia.swagger.codegen.api",
+  "modelPackage"    : "cl.ingerencia.client.algolia.swagger.codegen.model",
+  "configPackage"   : "cl.ingerencia.client.algolia.swagger.codegen.config",
+  "java8"           : true,
+  "title"           : "Client algolia",
+  "hideGenerationTimestamp" : true,
+  "library"         : "resttemplate"
+}

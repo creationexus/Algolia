@@ -1,0 +1,16 @@
+{
+  "groupId"         : "cl.ingerencia.api.algolia",
+  "artifactId"      : "api-algolia",
+  "artifactVersion" : "1.0.0",
+  "artifactDescription" : "api para consumo de api algolia",
+  
+  "basePackage"     : "cl.ingerencia.api.algolia",
+  "invokerPackage"  : "cl.ingerencia.api.algolia.swagger",
+  "apiPackage"      : "cl.ingerencia.api.algolia.swagger.codegen.api",
+  "modelPackage"    : "cl.ingerencia.api.algolia.swagger.codegen.model",
+  "configPackage"   : "cl.ingerencia.api.algolia.swagger.codegen.config",
+  "java8"           : true,
+  "title"           : "Api algolia",
+  "hideGenerationTimestamp" : true,
+  "library"         : "spring-boot"
+}

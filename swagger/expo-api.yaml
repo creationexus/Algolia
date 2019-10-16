@@ -1,0 +1,90 @@
+# java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/expo-api.yaml -l spring -c ./swagger/expo-conf.json -o art-api --ignore-file-override .\.swagger-codegen-ignore
+swagger: '3.0.12'
+info:
+  description: Prueba para desafío de implementación 
+  version: 1.0.0
+  title: API Articulos
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: random@deltaquo.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: '127.0.0.1'
+basePath: /api/v1
+tags:
+  - name: articulos
+    description: Lista de articulos a procesar
+schemes:
+  - https
+paths:
+  /articulos:
+    get:
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            default: nodejs
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+
+      tags:
+        - articulos
+      summary: Lista de articulos a procesar
+      operationId: articulos
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Articulos
+          schema:
+            $ref: '#/definitions/Paginacion'
+definitions:
+  Paginacion:
+    type: object
+    properties:
+      articulos:
+        type: array
+        items:
+          $ref: '#/definitions/Articulo'
+      hitsPerPage:
+        type: integer
+      nbHits:
+        type: integer
+      nbPages:
+        type: integer
+      page:
+        type: integer
+      params:
+        type: string
+      processingTimeMS:
+        type: integer
+      query:
+        type: string
+  Articulo:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      title:
+        type: string
+      url:
+        type: string
+      author:
+        type: string
+      points:
+        type: number
+      objectID:
+        type: number
+      comment_text:
+        type: string
+externalDocs:
+  description: Especificación de swagger
+  url: 'https://swagger.io/docs/specification/about/'
