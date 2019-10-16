@@ -1,98 +1,58 @@
-# Generador Datos Desafio
+Maven 3.6.2
+https://maven.apache.org/download.cgi
 
-Este proyecto expone un API REST que entrega la siguiente información:
+https://www-us.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.zip
 
-*id*: identificador obtenido de API REST Periodos
-*fechaCreacion*: Fecha de inicio de la secuencia obtenida de API REST Periodos
-*fechaFin*: Fecha de fin de la secuencia obtenida de API REST Periodos
-*fechas*: Lista de fechas que están en el rango de la fecha que se encuentra en “fechaCreacion” hasta la fecha “fechaFin” obtenidas de API REST Periodos
-*fechasFaltantes*: Lista de rangos que considera los 1º de cada mes entre fechas de i e i+1 para cada i entre 0 y n - 1 elementos de lista *fechas*, por cada iteracion sólo se consideran los meses entre fechas i e i+1 ambos no inclusive.
-Ejemplo.
-```json
-{
-    "id": 1,
-    "fechaCreacion": "1998-10-01",
-    "fechaFin": "1999-08-01",
-    "fechas": [
-      "1998-11-01",
-      "1999-03-01",
-      "1999-07-01",
-      "1999-08-01",],
-    "fechasFaltantes": [
-      "1998-12-01",
-      "1999-01-01",
-      "1999-02-01",
-      "1999-04-01",
-      "1999-05-01",
-      "1999-06-01",
-    ]
-}
-```
-*Nota*:
-El formato de las fechas es yyyy-MM-dd
-El servicio entrega 1 periodos, el periodo contiene una fecha inicial una fecha final, una lista fechas, y una lista de fechas que se encuentra en el rango cada 2 fechas de la lista.
+4bb0e0bb1fb74f1b990ba9a6493cc6345873d9188fc7613df16ab0d5bd2017de5a3917af4502792f0bad1fcc95785dcc6660f7add53548e0ec4bfb30ce4b1da7  apache-maven-3.6.2-bin.zip
 
-# Detalle de los sistemas
+Paso 1: Generar los fuentes para el cliente que se comunicara con la api externa
+java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/consumo-client.yaml -l java -c ./swagger/consumo-conf.json -o art-client --ignore-file-override .\.swagger-codegen-ignore
 
-Swagger Codegen 2.3.1 (OpenApi 2.0)
-Java 8
-Spring-Boot 1.5.11.RELEASE
-Maven 3
+Paso 2: Generar los fuentes de api que expone registros 
 
-# Se requiere que la API Generador de datos GDD se este ejecutando en puerto 8050
+java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/expo-api.yaml -l spring -c ./swagger/expo-conf.json -o art-api --ignore-file-override .\.swagger-codegen-ignore
 
-Una versión del GDD se encuentra en este repositorio en GitHub: https://github.com/previred/Generador_Datos_Desafio_Uno
+Paso 3: En el POM de la api generada en paso 2 le agrego una dependencia hacia el cliente generado en paso 1
 
-# Compilar y ejecutar el proyecto
 
-Para copilar el proyecto se requiere Java y Maven instalado.
-Ingresar al directorio *ApiPeriodos* ejecutar el siguiente comando *maven*
 
-```bash
-mvn package
-```
+Para no complicar la ejecución, se decide dejar juntos los 2 procesos en un solo artefacto:
+1.- proceso que extrae registros(cada x tiempo) de api externa y los almacena en base de datos
+2.- servicio que consulta en base de datos registros previamente extraídos y pagina resultados
 
-Luego de compilar el proyecto ingresar al directorio *target* ejecutar el siguiente comando *java*
+Nora: Se recomienda utilizar 2 artefactos separados, para:
+1.- Que la caída de la extracción no afecte la disponibilidad de servicio y lo contrario
+2.- Asignación de recursos de forma individual a cada proceso según carga 
 
-```bash
-java -jar ./target/api-periodos-faltantes-1.0.0.jar
-```
-*Nota*:
-Debe estar disponible el puerto *8060* en el PC donde se ejecute esta API
 
-# Visualizar Documentación y consumir la API
+Para ejecutar, solo basta con ejecutar lo siguiente:
 
-La documentación swagger del API (una vez que se levanta el API) queda disponible en
+java -jar .backend-gen/art-api/target/api-algolia-1.0.0.jar
 
-http://127.0.0.1:8060/periodosFaltantes/swagger-ui.html#!/
 
-Para consumir el servicio se debe invocar la siguiente URL
+Conexión a base de datos MySQL
 
-```bash
-curl -X GET --header 'Accept: application/json' 'http://127.0.0.1:8060/periodos/api'
-```
+Reemplazar los siguientes parámetros en archivo application.properties:
 
-# Regenerar API a partir de yaml
+spring.datasource.url=jdbc:mysql://0.0.0.0:3306/algolia?useSSL=false
+spring.datasource.username=algolia
+spring.datasource.password=algolia
 
-Las siguientes instrucciones solo son para re-escribir el API si es necesario agregar una nueva funcionalidad a partir del *YAML*.
+La estructura de la tabla es la siguiente:
 
-Bajar SwaggerCodeGen 2.3.1 en la raíz del proyecto, ejecutando el siguiente comando por consola.
+CREATE TABLE `articulos` (
+  `id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-```bash
-wget http://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar -O swagger-codegen-cli.jar
-```
 
-Para re-crear el código a partir de la definición del *YAML* de swagger ejecutar el siguiente comando
 
-API
-```bash
-java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/periodos-api.yaml -l spring -c ./swagger/config-api.json -o ApiPeriodos --ignore-file-override .\.swagger-codegen-ignore
-```
 
-Cliente (genera algunas definiciones y tests que pueden ser eliminados)
-```bash
-java -jar ./swagger-codegen-cli-2.3.1.jar generate -i ./swagger/periodos-client.yaml -l java -c ./swagger/config-client.json -o ApiPeriodos --ignore-file-override .\.swagger-codegen-ignore
-```
 
-*Nota*:
-Esto creara toda la estructura de swagger y re-escribirá todas las clases que no estén declaradas en el archivo *.swagger-codegen-ignore*
+
+
+
+
+
+
+
