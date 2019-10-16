@@ -24,7 +24,7 @@ public class Tasks {
     @Autowired
     private ArtService service;
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 60000)
     public void scheduleTaskWithFixedDelay() throws InterruptedException {
         logger.info("Fixed Delay Task: Start Time - {}", formatter.format(LocalDateTime.now()));
 
@@ -39,8 +39,9 @@ public class Tasks {
 	        logger.info(articulos.getHits().size()+"");
 	        for(Hit hit : articulos.getHits()){
 	        	if(service.exists(hit.getObjectID().toBigInteger())){
-	        		e=false;
-	        		break; //cuando se encuentra con algun registro repetido se asume que los siguientes ya fueron revisados
+	        		//e=false;
+	        		//break; //cuando se encuentra con algun registro repetido se asume que los siguientes ya fueron revisados
+	        		logger.info("repetido "+hit.getObjectID());
 	        	}else{
 	        		
 	    	        logger.info(hit.getAuthor());
