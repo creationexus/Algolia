@@ -1,5 +1,5 @@
 
-##DESARROLLO
+## DESARROLLO
 
 Descargar articulos desde https://hn.algolia.com/api/v1/search_by_date?query=nodejs&hitsPerPage=100 hacia base de datos y luego exponer api para desplegarlos
 
@@ -61,7 +61,7 @@ Paso 4: Si es necesario realizar algun cambio en la configuracion de "art-api", 
 mvn clean install package
 ```
 
-##PRUEBA
+## PRUEBA
 
 Para probar, es necesario tener configurada la base de datos y ejecutar java -jar junto a la ubicacion del jar "api-algolia-1.0.0.jar"
 ```
